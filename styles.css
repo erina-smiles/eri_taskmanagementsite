@@ -43,4 +43,8 @@ button:hover {
     background-color: #3E2723;
     color: white;
 }
+.task-text.completed {
+    text-decoration: line-through;
+    color: grey;
+}
 

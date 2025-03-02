@@ -1,17 +1,5 @@
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [
-    { text: "Complete project report 📑", completed: false },
-    { text: "Read 10 pages of a book 📖", completed: false },
-    { text: "Go for a 30-minute walk 🚶‍♂️", completed: false },
-    { text: "Organize workspace 🗂️", completed: false },
-    { text: "Plan next week's schedule 📝", completed: false },
-    { text: "Play guitar for 15 minutes 🎸", completed: false },
-    { text: "Paint something creative 🎨", completed: false },
-    { text: "Follow a skincare routine 🧖‍♀️", completed: false },
-    { text: "Listen to relaxing music 🎶", completed: false },
-    { text: "Try meditation for 10 minutes 🧘‍♂️", completed: false }
-];
-
-let undoStack = []; // Stores the last deleted/completed task for undo
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let undoStack = [];
 
 // Function to display tasks
 function displayTasks() {
@@ -20,10 +8,12 @@ function displayTasks() {
 
     tasks.forEach((task, index) => {
         let taskItem = document.createElement("li");
+
+        // Add completed class if task is marked done
         taskItem.innerHTML = `
-            <span class="${task.completed ? 'completed' : ''}">${task.text}</span>
-            <button onclick="toggleTask(${index})">✔</button>
-            <button onclick="deleteTask(${index})">❌</button>
+            <span class="task-text ${task.completed ? 'completed' : ''}">${task.text}</span>
+            <button class="tick-btn" onclick="toggleTask(${index})">✔</button>
+            <button class="delete-btn" onclick="deleteTask(${index})">❌</button>
         `;
         taskList.appendChild(taskItem);
     });
@@ -31,36 +21,52 @@ function displayTasks() {
     localStorage.setItem("tasks", JSON.stringify(tasks)); // Save tasks
 }
 
-// Toggle task completion
+// Function to add a new task
+function addTask() {
+    let taskInput = document.getElementById("task").value.trim();
+    if (taskInput === "") {
+        alert("Please enter a task!");
+        return;
+    }
+
+    let newTask = { text: taskInput, completed: false };
+    tasks.push(newTask);
+    displayTasks();
+    document.getElementById("task").value = ""; // Clear input
+}
+
+// Toggle task completion (strike through on tick button press)
 function toggleTask(index) {
-    undoStack.push({ action: "toggle", task: { ...tasks[index] }, index }); // Store for undo
+    undoStack.push({ action: "toggle", task: { ...tasks[index] }, index });
     tasks[index].completed = !tasks[index].completed;
     displayTasks();
 }
 
 // Delete a task
 function deleteTask(index) {
-    undoStack.push({ action: "delete", task: { ...tasks[index] }, index }); // Store for undo
+    undoStack.push({ action: "delete", task: { ...tasks[index] }, index });
     tasks.splice(index, 1);
     displayTasks();
 }
 
 // Undo last action
 function undoLastAction() {
-    if (undoStack.length === 0) return alert("Nothing to undo!");
+    if (undoStack.length === 0) {
+        alert("Nothing to undo!");
+        return;
+    }
 
     let lastAction = undoStack.pop();
-    
     if (lastAction.action === "delete") {
-        tasks.splice(lastAction.index, 0, lastAction.task); // Restore deleted task
+        tasks.splice(lastAction.index, 0, lastAction.task);
     } else if (lastAction.action === "toggle") {
-        tasks[lastAction.index].completed = !tasks[lastAction.index].completed; // Reverse completion status
+        tasks[lastAction.index].completed = !tasks[lastAction.index].completed;
     }
 
     displayTasks();
 }
 
-// Language Translation (English <-> Tamil)
+// Language Translation
 const translations = {
     "Task Manager ✅": "பணி மேலாளர் ✅",
     "You don’t have to be great to start, but you have to start to be great, SO START PLANNING!":
@@ -77,7 +83,10 @@ let isTamil = false;
 
 function toggleLanguage() {
     document.querySelector("h1").innerText = isTamil ? "Task Manager ✅" : translations["Task Manager ✅"];
-    document.querySelector(".quote").innerText = isTamil ? translations["You don’t have to be great to start, but you have to start to be great, SO START PLANNING!"] : "You don’t have to be great to start, but you have to start to be great, SO START PLANNING!";
+    document.querySelector(".quote").innerText = isTamil ? 
+        translations["You don’t have to be great to start, but you have to start to be great, SO START PLANNING!"] :
+        "You don’t have to be great to start, but you have to start to be great, SO START PLANNING!";
+    
     document.getElementById("task").placeholder = isTamil ? translations["Enter a new task..."] : "Enter a new task...";
     document.getElementById("addTaskBtn").innerText = isTamil ? translations["Add Task"] : "Add Task";
     document.getElementById("darkModeToggle").innerText = isTamil ? translations["Toggle Dark Mode 🌙"] : "Toggle Dark Mode 🌙";
@@ -87,6 +96,11 @@ function toggleLanguage() {
     isTamil = !isTamil;
 }
 
-// Call displayTasks() when the page loads
+// Add event listener for the Add Task button
+document.getElementById("addTaskBtn").addEventListener("click", addTask);
+
+// Display tasks when page loads
 window.onload = displayTasks;
+
+
 
