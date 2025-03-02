@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1> Smile's Task Manager ✅</h1>
+        <p class="quote">"You don’t have to be great to start, but you have to start to be great, <strong>SO START PLANNING!</strong>"</p>
+
+        <!-- Task Input -->
+        <div class="task-input">
+            <input type="text" id="task" placeholder="Enter a new task...">
+            <select id="task-category">
+                <option value="General">General</option>
+                <option value="Work">Work</option>
+                <option value="Personal">Personal</option>
+                <option value="Health">Health</option>
+                <option value="Passion">Passion</option>
+            </select>
+            <button id="addTaskBtn">Add Task</button>
+        </div>
+
+        <!-- Task List -->
+        <ul id="taskList"></ul>
+
+        <!-- Feature Buttons -->
+        <button id="undoBtn" onclick="undoLastAction()">Undo Last Action</button>
+        <button id="darkModeToggle">Toggle Dark Mode 🌙</button>
+        <button id="languageToggle" onclick="toggleLanguage()">Switch to Tamil</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
